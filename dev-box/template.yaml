@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: dev-box-template
-  title: Create Dev Box Template
+  title: Dev Box
   description: Create a new Dev Box
   tags:
     - azure
