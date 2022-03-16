@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: templates
+  description: A collection of software templates
+spec:
+  targets:
+    - ./app-service/component.yaml
+    - ./dev-box/template.yaml
+    - ./function-app/component.yaml
+    - ./microservice-csharp/component.yaml
+    - ./playground/component.yaml
+    - ./sonarqubeVM/component.yaml
+    - ./sonarqubeWA/component.yaml
+    - ./visualstudio2019/component.yaml

@@ -1,0 +1,44 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+
+metadata:
+  name: visualstudio-2019
+  title: VisualStudio 2019
+  description: This template provisions a function app on a Consumption plan, which is a dynamic hosting plan. The app runs on demand and you aree billed per execution, with no standing resource committment.
+  tags:
+    - azure
+    - environment
+
+spec:
+  owner: group:backstage-admins
+  type: service
+
+  parameters:
+    - title: New Visual Studio
+      description: Options for creating
+      type: object
+      required:
+        - adminUsername
+        - adminPassword
+      properties:
+        adminUsername:
+          name: Admin Username
+          type: string
+          default: coder
+        adminPassword:
+          name: Admin Password
+          type: string
+  steps:
+    - id: fetch-deploy
+      name: Fetch Deploy
+      action: fetch:plain
+      input:
+        url: ./
+        targetPath: ./deploy
+
+    - id: debug-log
+      name: Debug Log
+      action: debug:log
+      input:
+        message: Hello World
+        listWorkspace: true

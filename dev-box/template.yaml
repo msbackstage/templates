@@ -1,0 +1,133 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: dev-box-template
+  title: Create Dev Box Template
+  description: Create a new Dev Box
+  tags:
+    - azure
+    - devbox
+spec:
+  owner: group:backstage-admins
+  type: dev-box
+  parameters:
+    - title: Provide some simple information
+      required:
+        - component_id
+        - owner
+        - project
+      properties:
+        component_id:
+          title: Name
+          type: string
+          description: Unique name of the component
+          ui:field: EntityNamePicker
+        description:
+          title: Description
+          type: string
+          description: Help others understand what this box is for.
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the box (you)
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - User
+        project:
+          title: Project
+          type: string
+          enum:
+            - project-alpha
+            - project-kappa
+            - project-omega
+          enumNames:
+            - Project Alpha
+            - Project Kappa
+            - Project Omega
+          ui:placeholder: Select a project
+        # boxType:
+        #   title: Type
+        #   type: string
+        #   default: Project Alpha back end (West US)
+        #   enum:
+        #     - Project Alpha back end (West US)
+        #     - Project Kappa back end (West US)
+        #     - Project Omega back end (West US)
+
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            # Here's the option you can pass to the RepoUrlPicker
+            requestUserCredentials:
+              secretsKey: USER_OAUTH_TOKEN
+              additionalScopes:
+                github:
+                  - workflow:write
+            allowedHosts:
+              - github.com
+  steps:
+    - id: template
+      name: Fetch Skeleton + Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        copyWithoutRender:
+          - .github/workflows/*
+        values:
+          component_id: ${{ parameters.component_id }}
+          description: ${{ parameters.description }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+          project: ${{ parameters.project }}
+          owner: ${{ parameters.owner }}
+
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        allowedHosts:
+          - github.com
+        description: This is ${{ parameters.component_id }}
+        repoUrl: ${{ parameters.repoUrl }}
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+        defaultBranch: main
+        repoVisibility: public
+
+    # - id: publish
+    #   name: Publish
+    #   action: publish:github:pull-request
+    #   input:
+    #     # repoUrl: ${{ parameters.repoUrl }}
+    #     repoUrl: github.com?repo=backstage-catalog&owner=colbylwilliams
+    #     title: 'Create new Dev Box: ${{parameters.component_id}}'
+    #     branchName: create-${{parameters.component_id}}
+    #     description: |
+    #       # New Dev Box: ${{parameters.component_id}}
+    #       ${{ parameters.description if parameters.description }}
+    #     targetPath: dev-boxes/${{ parameters.component_id }}
+    #     token: ${{ secrets.USER_OAUTH_TOKEN }}
+
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
+  # output:
+  #   links:
+  #     - url: ${{steps.publish.output.remoteUrl}}
+  #       text: 'Go to PR'
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}

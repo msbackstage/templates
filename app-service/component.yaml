@@ -1,0 +1,67 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+
+metadata:
+  name: azure-app-service
+  title: Azure App Service
+  description: This template deploys an App Service plan and an App Service app on Linux. It is compatible with all supported programming languages on App Service.
+  tags:
+    - azure
+    - environment
+
+# Set the component type
+# type: Environment
+
+# set the component description
+# description: ./readme.md
+
+# configuration:
+#   # Set the component isolation level
+#   isolation: ResourceGroup
+
+spec:
+  owner: group:backstage-admins
+  type: service
+
+  parameters:
+    - title: New Function App
+      description: Options for creating a Function App
+      type: object
+      required:
+        - runtime
+      properties:
+        runtime:
+          name: Runtime
+          type: string
+          default: dotnet
+          enum:
+            - node
+            - dotnet
+            - java
+  steps:
+    - id: fetch-deploy
+      name: Fetch Deploy
+      action: fetch:plain
+      input:
+        url: ./
+        targetPath: ./deploy
+
+    - id: debug-log
+      name: Debug Log
+      action: debug:log
+      input:
+        message: Hello World
+        listWorkspace: true
+# tasks:
+
+#   - id: reset
+#     name: Reset
+#     description: Reset the component to its original state.
+
+# taskRunner:
+#   id: teamcloud/tcrunner-terraform
+
+# permissions:
+
+#   - role: owner
+#     permission: Contributor

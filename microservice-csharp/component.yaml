@@ -1,0 +1,34 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+
+metadata:
+  name: microservice-csharp
+  title: Microservice C#
+  description: Create a new repository with a C# microservice sample project
+  tags:
+    - azure
+    - environment
+
+spec:
+  owner: group:backstage-admins
+  type: service
+
+  parameters:
+    - title: New Function App
+      description: Options for creating a Function App
+      type: object
+      properties: []
+  steps:
+    - id: fetch-deploy
+      name: Fetch Deploy
+      action: fetch:plain
+      input:
+        url: ./
+        targetPath: ./deploy
+
+    - id: debug-log
+      name: Debug Log
+      action: debug:log
+      input:
+        message: Hello World
+        listWorkspace: true

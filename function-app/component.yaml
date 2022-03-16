@@ -1,0 +1,66 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+
+metadata:
+  name: azure-function-app
+  title: Azure Function App
+  description: This template provisions a function app on a Consumption plan, which is a dynamic hosting plan. The app runs on demand and you are billed per execution, with no standing resource committment.
+  tags:
+    - azure
+    - environment
+    - serverless
+# type: Environment
+# description: ./readme.md
+
+# configuration:
+# isolation: ResourceGroup
+
+spec:
+  owner: group:backstage-admins
+  type: service
+
+  parameters:
+    - title: New Function App
+      description: Options for creating a Function App
+      type: object
+      required:
+        - functionAppRuntime
+        - storageAccountType
+      properties:
+        functionAppRuntime:
+          name: Function App Runtime
+          title: Function App Runtime
+          type: string
+          default: dotnet
+          enum:
+            - node
+            - dotnet
+            - java
+        storageAccountType:
+          name: Storage Account Type
+          title: Storage Account Type
+          type: string
+          default: Standard_LRS
+          enum:
+            - Standard_LRS
+            - Standard_GRS
+            - Standard_RAGRS
+        httpsOnly:
+          name: HTTPS only
+          title: HTTPS only
+          type: boolean
+          default: true
+  steps:
+    - id: fetch-deploy
+      name: Fetch Deploy
+      action: fetch:plain
+      input:
+        url: ./
+        targetPath: ./deploy
+
+    - id: debug-log
+      name: Debug Log
+      action: debug:log
+      input:
+        message: Hello World
+        listWorkspace: true
