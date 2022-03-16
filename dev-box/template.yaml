@@ -20,7 +20,7 @@ spec:
         component_id:
           title: Name
           type: string
-          description: Unique name of the component
+          description: Unique name of the dev box (without spaces)
           ui:field: EntityNamePicker
         description:
           title: Description
@@ -74,7 +74,7 @@ spec:
               - github.com
   steps:
     - id: template
-      name: Fetch Skeleton + Template
+      name: Fetch template and config files
       action: fetch:template
       input:
         url: ./skeleton
@@ -88,7 +88,7 @@ spec:
           owner: ${{ parameters.owner }}
 
     - id: publish
-      name: Publish
+      name: Create new dev box
       action: publish:github
       input:
         allowedHosts:
@@ -99,22 +99,8 @@ spec:
         defaultBranch: main
         repoVisibility: public
 
-    # - id: publish
-    #   name: Publish
-    #   action: publish:github:pull-request
-    #   input:
-    #     # repoUrl: ${{ parameters.repoUrl }}
-    #     repoUrl: github.com?repo=backstage-catalog&owner=colbylwilliams
-    #     title: 'Create new Dev Box: ${{parameters.component_id}}'
-    #     branchName: create-${{parameters.component_id}}
-    #     description: |
-    #       # New Dev Box: ${{parameters.component_id}}
-    #       ${{ parameters.description if parameters.description }}
-    #     targetPath: dev-boxes/${{ parameters.component_id }}
-    #     token: ${{ secrets.USER_OAUTH_TOKEN }}
-
     - id: register
-      name: Register
+      name: Register dev box with backstage
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}

@@ -14,6 +14,14 @@ metadata:
     backstage.io/techdocs-ref: dir:.
     msft.dev/resource-type: dev-box
     msft.dev/project-slug: ${{values.project | dump}}
+  links:
+    - title: Open in browser
+      url: '#'
+      icon: Computer
+    - title: Open in Remote Desktop
+      url: '#'
+      icon: Code
+
 spec:
   type: dev-box
   lifecycle: production
