@@ -16,10 +16,10 @@ metadata:
     msft.dev/project-slug: ${{values.project | dump}}
   links:
     - title: Open in browser
-      url: '#'
+      url: 'https://github.com/msbackstage'
       icon: Computer
     - title: Open in Remote Desktop
-      url: '#'
+      url: 'https://github.com/msbackstage'
       icon: Code
 
 spec:
